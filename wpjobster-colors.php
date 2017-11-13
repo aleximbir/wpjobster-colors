@@ -8,16 +8,46 @@
 	Author URI: http://wpjobster.com/
 */
 
+add_action( 'init', 'wpjobster_set_color_session' );
+function wpjobster_set_color_session(){
+	if ( WPJ_Form::get( 'color1', '' ) && WPJ_Form::get( 'color2', '' ) ) {
+		$_SESSION['color1'] = WPJ_Form::get( 'color1', '' );
+		$_SESSION['color2'] = WPJ_Form::get( 'color2', '' );
+	}
+}
+
+add_action( 'wp_enqueue_scripts', 'wpjobster_enqueue_custom_styles', 11 );
+function wpjobster_enqueue_custom_styles() {
+	if ( isset( $_SESSION['color1'] ) && isset( $_SESSION['color2'] ) ) {
+
+		if ( $_SESSION['color1'] == 'fbbc05' && $_SESSION['color2'] == 'd29c01' ) {
+			$style_name = 'yellow';
+		} elseif ( $_SESSION['color1'] == 'EA6A51' && $_SESSION['color2'] == 'af4530' ) {
+			$style_name = 'sienna';
+		} elseif ( $_SESSION['color1'] == 'dd3333' && $_SESSION['color2'] == '911414' ) {
+			$style_name = 'red';
+		} elseif ( $_SESSION['color1'] == 'DB5461' && $_SESSION['color2'] == '9c3d46' ) {
+			$style_name = 'mandy';
+		} elseif ( $_SESSION['color1'] == '4076bc' && $_SESSION['color2'] == '03274b' ) {
+			$style_name = 'blue';
+		} elseif ( $_SESSION['color1'] == '698C9D' && $_SESSION['color2'] == '486471' ) {
+			$style_name = 'grey';
+		} elseif ( $_SESSION['color1'] == '4a4d52' && $_SESSION['color2'] == '23282d' ) {
+			$style_name = 'tuna';
+		} else {
+			$style_name = 'lima';
+		}
+
+		wp_enqueue_style( 'semantic-custom-styles', plugin_dir_url( __FILE__ ) . '/css/semantic-' . $style_name . '.css' );
+
+	}
+}
+
 add_action('custom_colors_panel', 'wpjobster_custom_color');
 function wpjobster_custom_color(){
 	$protocol = is_ssl() ? 'https://' : 'http://';
 	$url = $protocol . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 	$color_margin = '0px';
-
-	if ( WPJ_Form::get( 'color1', '' ) && WPJ_Form::get( 'color2', '' ) ) {
-		$_SESSION['color1'] = WPJ_Form::get( 'color1', '' );
-		$_SESSION['color2'] = WPJ_Form::get( 'color2', '' );
-	}
 
 	if ( isset( $_SESSION['color1'] ) && isset( $_SESSION['color2'] ) ) {
 		add_filter( 'primary_color', 'primary_color', 10);
